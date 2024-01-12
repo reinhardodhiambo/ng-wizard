@@ -17,7 +17,7 @@
             "outputPath": "dist/demo",
             "index": "src/demo/index.html",
             "main": "src/demo/main.ts",
-            "polyfills": "src/demo/polyfills.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "src/demo/tsconfig.app.json",
             "assets": [
               "src/demo/favicon.ico",
@@ -26,8 +26,7 @@
             "styles": [
               "src/demo/styles.css"
             ],
-            "scripts": [],
-            "es5BrowserSupport": true
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -40,7 +39,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "aot": true,
               "extractLicenses": true,
@@ -143,7 +141,7 @@
       "prefix": "ng",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "src/ng-wizard/tsconfig.lib.json",
             "project": "src/ng-wizard/ng-package.json"
@@ -177,7 +175,6 @@
       }
     }
   },
-  "defaultProject": "demo",
   "cli": {
     "analytics": "e260d4c9-d537-419f-9df7-f7b9639a17f5"
   }

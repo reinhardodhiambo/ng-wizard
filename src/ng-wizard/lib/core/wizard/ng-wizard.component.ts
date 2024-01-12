@@ -1,10 +1,19 @@
-import { Component, AfterContentInit, Input, OnDestroy, EventEmitter, Output, ContentChildren, QueryList } from '@angular/core';
-import { isObservable, observable, Observable, of, Subscription } from 'rxjs';
+import {
+  Component,
+  AfterContentInit,
+  Input,
+  OnDestroy,
+  EventEmitter,
+  Output,
+  ContentChildren,
+  QueryList
+} from '@angular/core';
+import {isObservable, observable, Observable, of, Subscription} from 'rxjs';
 
-import { NgWizardDataService } from '../ng-wizard-data.service';
-import { NgWizardConfig, NgWizardStep, ToolbarButton, StepChangedArgs, StepValidationArgs } from '../../utils/interfaces';
-import { TOOLBAR_POSITION, STEP_STATE, STEP_STATUS, THEME, STEP_DIRECTIN, STEP_POSITION } from '../../utils/enums';
-import { merge } from '../../utils/functions';
+import {NgWizardDataService} from '../ng-wizard-data.service';
+import {NgWizardConfig, NgWizardStep, ToolbarButton, StepChangedArgs, StepValidationArgs} from '../../utils/interfaces';
+import {TOOLBAR_POSITION, STEP_STATE, STEP_STATUS, THEME, STEP_DIRECTIN, STEP_POSITION} from '../../utils/enums';
+import {merge} from '../../utils/functions';
 
 @Component({
   selector: 'ng-wizard',
@@ -41,11 +50,11 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
     toolbarBottom?: string;
   } = {};
 
-  showToolbarTop: boolean = false;
-  showPreviousButton: boolean = false;
-  showNextButton: boolean = false;
-  showToolbarBottom: boolean = false;
-  showExtraButtons: boolean = false;
+  showToolbarTop = false;
+  showPreviousButton = false;
+  showNextButton = false;
+  showToolbarBottom = false;
+  showExtraButtons = false;
   currentStepIndex: number = null; // Active step index
   currentStep: NgWizardStep; // Active step
 
@@ -78,7 +87,7 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
 
   _init() {
     // set config
-    let defaultConfig = this.ngWizardDataService.getDefaultConfig();
+    const defaultConfig = this.ngWizardDataService.getDefaultConfig();
     this.config = merge(defaultConfig, this.pConfig);
 
     // set step states
@@ -104,7 +113,7 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
       && this.config.anchorSettings.markAllPreviousStepsAsDone) {
 
       this.steps.forEach(step => {
-        if (step.state != STEP_STATE.disabled && step.state != STEP_STATE.hidden) {
+        if (step.state !== STEP_STATE.disabled && step.state !== STEP_STATE.hidden) {
           step.status = step.index < this.config.selected ? STEP_STATUS.done : step.status;
         }
       });
@@ -139,20 +148,22 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
     }
 
     // Set the toolbar styles
+    // tslint:disable-next-line:max-line-length
     this.styles.toolbarTop = 'btn-toolbar ng-wizard-toolbar ng-wizard-toolbar-top justify-content-' + this.config.toolbarSettings.toolbarButtonPosition;
+    // tslint:disable-next-line:max-line-length
     this.styles.toolbarBottom = 'btn-toolbar ng-wizard-toolbar ng-wizard-toolbar-bottom justify-content-' + this.config.toolbarSettings.toolbarButtonPosition;
 
-    // Set previous&next buttons 
+    // Set previous&next buttons
     this.styles.previousButton = 'btn btn-secondary ng-wizard-btn-prev';
     this.styles.nextButton = 'btn btn-secondary ng-wizard-btn-next';
   }
 
   _setToolbar() {
-    this.showToolbarTop = this.config.toolbarSettings.toolbarPosition == TOOLBAR_POSITION.top ||
-      this.config.toolbarSettings.toolbarPosition == TOOLBAR_POSITION.both;
+    this.showToolbarTop = this.config.toolbarSettings.toolbarPosition === TOOLBAR_POSITION.top ||
+      this.config.toolbarSettings.toolbarPosition === TOOLBAR_POSITION.both;
 
-    this.showToolbarBottom = this.config.toolbarSettings.toolbarPosition == TOOLBAR_POSITION.bottom ||
-      this.config.toolbarSettings.toolbarPosition == TOOLBAR_POSITION.both;
+    this.showToolbarBottom = this.config.toolbarSettings.toolbarPosition === TOOLBAR_POSITION.bottom ||
+      this.config.toolbarSettings.toolbarPosition === TOOLBAR_POSITION.both;
 
     this.showPreviousButton = this.config.toolbarSettings.showPreviousButton;
     this.showNextButton = this.config.toolbarSettings.showNextButton;
@@ -161,7 +172,7 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
   }
 
   _setEvents() {
-    //TODO: keyNavigation
+    // TODO: keyNavigation
     // Keyboard navigation event
     if (this.config.keyNavigation) {
       // $(document).keyup(function (e) {
@@ -204,16 +215,15 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
       return;
     }
 
-    if (!this.config.anchorSettings.enableAnchorOnDoneStep && selectedStep.status == STEP_STATUS.done) {
+    if (!this.config.anchorSettings.enableAnchorOnDoneStep && selectedStep.status === STEP_STATUS.done) {
       return true;
     }
 
-    if (selectedStep.index != this.currentStepIndex) {
+    if (selectedStep.index !== this.currentStepIndex) {
       if (this.config.anchorSettings.enableAllAnchors && this.config.anchorSettings.anchorClickable) {
         this._showStep(selectedStep.index);
-      }
-      else {
-        if (selectedStep.status == STEP_STATUS.done) {
+      } else {
+        if (selectedStep.status === STEP_STATUS.done) {
           this._showStep(selectedStep.index);
         }
       }
@@ -225,20 +235,19 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
       event.preventDefault();
     }
     // Find the next not disabled & hidden step
-    let filteredSteps = this.steps.filter(step => {
-      return step.index > (this.currentStepIndex == null ? -1 : this.currentStepIndex)
-        && step.state != STEP_STATE.disabled
-        && step.state != STEP_STATE.hidden;
+    const filteredSteps = this.steps.filter(step => {
+      return step.index > (this.currentStepIndex === null ? -1 : this.currentStepIndex)
+        && step.state !== STEP_STATE.disabled
+        && step.state !== STEP_STATE.hidden;
     });
 
-    if (filteredSteps.length == 0) {
+    if (filteredSteps.length === 0) {
       if (!this.config.cycleSteps) {
         return;
       }
 
       this._showStep(0)
-    }
-    else {
+    } else {
       this._showStep(filteredSteps.shift().index)
     }
   }
@@ -248,20 +257,19 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
       event.preventDefault();
     }
     // Find the previous not disabled & hidden step
-    let filteredSteps = this.steps.filter(step => {
-      return step.index < (this.currentStepIndex == null && this.config.cycleSteps ? this.steps.length : this.currentStepIndex)
-        && step.state != STEP_STATE.disabled
-        && step.state != STEP_STATE.hidden;
+    const filteredSteps = this.steps.filter(step => {
+      return step.index < (this.currentStepIndex === null && this.config.cycleSteps ? this.steps.length : this.currentStepIndex)
+        && step.state !== STEP_STATE.disabled
+        && step.state !== STEP_STATE.hidden;
     });
 
-    if (filteredSteps.length == 0) {
+    if (filteredSteps.length === 0) {
       if (!this.config.cycleSteps) {
         return;
       }
 
       this._showStep(this.steps.length - 1)
-    }
-    else {
+    } else {
       this._showStep(filteredSteps.pop().index)
     }
   }
@@ -273,14 +281,14 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
     }
 
     // If current step is requested again, skip
-    if (selectedStepIndex == this.currentStepIndex) {
+    if (selectedStepIndex === this.currentStepIndex) {
       return;
     }
 
-    let selectedStep = this.steps.toArray()[selectedStepIndex];
+    const selectedStep = this.steps.toArray()[selectedStepIndex];
 
     // If it is a disabled or hidden step, skip
-    if (selectedStep.state == STEP_STATE.disabled || selectedStep.state == STEP_STATE.hidden) {
+    if (selectedStep.state === STEP_STATE.disabled || selectedStep.state === STEP_STATE.hidden) {
       return;
     }
 
@@ -303,22 +311,19 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
       .finally(() => this._hideLoader());
   }
 
+  // tslint:disable-next-line:max-line-length
   private _isStepChangeValid(selectedStep, condition: boolean | ((args: StepValidationArgs) => boolean) | ((args: StepValidationArgs) => Observable<boolean>)): Observable<boolean> {
     if (typeof condition === typeof true) {
-      return of(<boolean>condition);
-    }
+      return of(condition as boolean);
+    } else if (condition instanceof Function) {
+      const direction = this._getStepDirection(selectedStep.index);
+      const result = condition({direction, fromStep: this.currentStep, toStep: selectedStep});
 
-    else if (condition instanceof Function) {
-      let direction = this._getStepDirection(selectedStep.index);
-      let result = condition({ direction: direction, fromStep: this.currentStep, toStep: selectedStep });
-
-      if (isObservable<boolean>(result)) {
+      if (isObservable(result)) {
         return result;
-      }
-      else if (typeof result === typeof true) {
-        return of(<boolean>result);
-      }
-      else {
+      } else if (typeof result === typeof true) {
+        return of(result as boolean);
+      } else {
         return of(false);
       }
     }
@@ -333,12 +338,12 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
     this._setButtons(selectedStep.index);
 
     // Trigger "stepChanged" event
-    const args = <StepChangedArgs>{
+    const args = {
       step: selectedStep,
       previousStep: this.currentStep,
       direction: this._getStepDirection(selectedStep.index),
       position: this._getStepPosition(selectedStep.index)
-    };
+    } as StepChangedArgs;
     this.stepChanged.emit(args);
     this.ngWizardDataService.stepChanged(args);
 
@@ -374,15 +379,13 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
     if (!this.config.cycleSteps) {
       if (0 >= index) {
         this.styles.previousButton = 'btn btn-secondary ng-wizard-btn-prev disabled';
-      }
-      else {
+      } else {
         this.styles.previousButton = 'btn btn-secondary ng-wizard-btn-prev';
       }
 
       if (this.steps.length - 1 <= index) {
         this.styles.nextButton = 'btn btn-secondary ng-wizard-btn-next disabled';
-      }
-      else {
+      } else {
         this.styles.nextButton = 'btn btn-secondary ng-wizard-btn-next';
       }
     }
@@ -422,17 +425,18 @@ export class NgWizardComponent implements OnDestroy, AfterContentInit {
   }
 
   _getStepDirection(selectedStepIndex: number): STEP_DIRECTIN {
-    return (this.currentStepIndex != null && this.currentStepIndex != selectedStepIndex) ?
+    return (this.currentStepIndex !== null && this.currentStepIndex !== selectedStepIndex) ?
       (this.currentStepIndex < selectedStepIndex ? STEP_DIRECTIN.forward : STEP_DIRECTIN.backward) : null;
   }
 
   _getStepPosition(selectedStepIndex: number): STEP_POSITION {
-    return (selectedStepIndex == 0) ? STEP_POSITION.first : (selectedStepIndex == this.steps.length - 1 ? STEP_POSITION.final : STEP_POSITION.middle);
+    // tslint:disable-next-line:max-line-length
+    return (selectedStepIndex === 0) ? STEP_POSITION.first : (selectedStepIndex === this.steps.length - 1 ? STEP_POSITION.final : STEP_POSITION.middle);
   }
 
   // PUBLIC FUNCTIONS
   _setTheme(theme: THEME) {
-    if (this.config.theme == theme) {
+    if (this.config.theme === theme) {
       return false;
     }
 

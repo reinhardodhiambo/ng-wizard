@@ -54,15 +54,15 @@ export class NgWizardDataService {
   }
 
   resetWizard() {
-    this._resetWizard.next();
+    this._resetWizard.next(null);
   }
 
   showNextStep() {
-    this._showNextStep.next();
+    this._showNextStep.next(null);
   }
 
   showPreviousStep() {
-    this._showPreviousStep.next();
+    this._showPreviousStep.next(null);
   }
 
   showStep(index: number) {
